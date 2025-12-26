@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Projectile Swarm</title>
+<title>Projectile Drift</title>
 <style>
     body {
         margin: 0;
@@ -55,33 +55,8 @@ function spawn() {
 
 setInterval(spawn, 1000);
 
-function collide(a, b) {
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
-    const dist = Math.hypot(dx, dy);
-    const min = RADIUS * 2;
-
-    if (dist < min && dist > 0) {
-        const overlap = min - dist;
-        const nx = dx / dist;
-        const ny = dy / dist;
-
-        a.x -= nx * overlap * 0.5;
-        a.y -= ny * overlap * 0.5;
-        b.x += nx * overlap * 0.5;
-        b.y += ny * overlap * 0.5;
-
-        a.vx -= nx * 0.5;
-        a.vy -= ny * 0.5;
-        b.vx += nx * 0.5;
-        b.vy += ny * 0.5;
-    }
-}
-
 function update() {
-    for (let i = 0; i < projectiles.length; i++) {
-        const p = projectiles[i];
-
+    projectiles.forEach(p => {
         let tx, ty;
 
         if (active) {
@@ -105,16 +80,12 @@ function update() {
         p.x += p.vx;
         p.y += p.vy;
 
-        for (let j = i + 1; j < projectiles.length; j++) {
-            collide(p, projectiles[j]);
-        }
-
         const rot = Math.atan2(p.vy, p.vx) * 180 / Math.PI;
 
         p.el.style.left = (p.x - RADIUS) + "px";
         p.el.style.top = (p.y - RADIUS) + "px";
         p.el.style.transform = `rotate(${rot}deg)`;
-    }
+    });
 
     requestAnimationFrame(update);
 }
@@ -123,4 +94,4 @@ update();
 </script>
 
 </body>
-  </html>
+</html>
